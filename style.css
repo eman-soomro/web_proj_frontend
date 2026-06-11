@@ -1,0 +1,52 @@
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f9fafc;
+  color: #333;
+  margin: 0;
+  padding: 2rem;
+}
+
+h1 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+form {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+input, button {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background: #3498db;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #2980b9;
+}
+
+pre {
+  background: #272822;
+  color: #f8f8f2;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
