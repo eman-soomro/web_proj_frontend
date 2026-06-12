@@ -22,7 +22,7 @@ function renderForecast(data) {
         <p><strong>Current Interest:</strong> ${details.current_interest}</p>
         <p><strong>Change %:</strong> ${details.change_percent}</p>
         <p><strong>Forecast Interest:</strong> ${details.forecast_interest}</p>
-        ${details.graph ? `<img src="${details.graph}" alt="${keyword} forecast graph" class="forecast-graph">` : ""}
+        ${details.graph ? `<img src="${backendUrl}${details.graph}" alt="${keyword} forecast graph" class="forecast-graph">` : ""}
         <table>
           <thead>
             <tr><th>Date</th><th>Predicted Interest</th></tr>
