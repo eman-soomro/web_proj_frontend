@@ -13,14 +13,16 @@
     <input type="number" id="horizon" placeholder="Prediction Horizon" value="30">
     <button type="submit">Run Forecast</button>
   </form>
-  <pre id="forecastResult"></pre>
+  <!-- Forecast results will be injected here -->
+  <div id="forecastResult" class="card"></div>
 
   <h1>RAG Query</h1>
   <form id="ragForm">
     <input type="text" id="ragKeyword" placeholder="Keyword" value="artificial intelligence">
     <button type="submit">Run RAG</button>
   </form>
-  <pre id="ragResult"></pre>
+  <!-- RAG results will be injected here -->
+  <div id="ragResult" class="card"></div>
 
   <script src="script.js"></script>
 </body>
