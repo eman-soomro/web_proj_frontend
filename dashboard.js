@@ -1,78 +1,103 @@
-import { createClient } from '@supabase/supabase-js'
-import Chart from 'chart.js/auto'
+const supabaseUrl = "https://ewastpsqndqjtiuaagwy.supabase.co";
+const supabaseKey = "sb_publishable_H4cWNsOmEAPu1ymPdhFxSw_YjRgoWDT";
 
-const backendUrl = "https://web-proj-backend.onrender.com"
-const supabaseUrl = "YOUR_SUPABASE_URL"
-const supabaseKey = "YOUR_SUPABASE_ANON_KEY"
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// Show sections
-window.showSection = function(sectionId) {
-  document.getElementById("notesSection").style.display = "none"
-  document.getElementById("predictionSection").style.display = "none"
-  document.getElementById(sectionId).style.display = "block"
-}
+let chart;
 
-// Notes CRUD
-document.getElementById("noteForm").addEventListener("submit", async (e) => {
-  e.preventDefault()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return alert("Please login first")
+// Section toggle
+window.showSection = function (id) {
+  document.getElementById("notesSection").style.display = "none";
+  document.getElementById("predictionSection").style.display = "none";
+  document.getElementById(id).style.display = "block";
+};
 
-  const title = document.getElementById("noteTitle").value
-  const content = document.getElementById("noteContent").value
-  const date = document.getElementById("noteDate").value
-  const value = parseFloat(document.getElementById("noteValue").value)
+// Logout
+window.logout = async function () {
+  await supabase.auth.signOut();
+  window.location.href = "auth.html";
+};
 
-  const { error } = await supabase.from("notes").insert([{ user_id: user.id, title, content, date, value }])
-  if (error) alert("Error: " + error.message)
-  else loadNotes()
-})
-
+// Load notes
 async function loadNotes() {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
 
-  const { data, error } = await supabase.from("notes").select("*").eq("user_id", user.id)
-  if (!error) {
-    document.getElementById("notesList").innerHTML = data.map(note => `
-      <div class="card">
-        <h3>${note.title}</h3>
-        <p>${note.content}</p>
-        <p>${note.date} → ${note.value}</p>
-      </div>
-    `).join("")
-  }
+  const { data } = await supabase
+    .from("notes")
+    .select("*")
+    .eq("user_id", user.id);
+
+  document.getElementById("notesList").innerHTML = data.map(n => `
+    <div class="card">
+      <h3>${n.title}</h3>
+      <p>${n.content}</p>
+      <small>${n.date} → ${n.value}</small>
+    </div>
+  `).join("");
+
+  document.getElementById("totalNotes").textContent = data.length;
+  if (data.length)
+    document.getElementById("latestValue").textContent =
+      data[data.length - 1].value;
 }
-loadNotes()
+
+loadNotes();
+
+// Add note
+document.getElementById("noteForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase.from("notes").insert([{
+    user_id: user.id,
+    title: noteTitle.value,
+    content: noteContent.value,
+    date: noteDate.value,
+    value: parseFloat(noteValue.value)
+  }]);
+
+  loadNotes();
+});
 
 // Forecast
 document.getElementById("forecastForm").addEventListener("submit", async (e) => {
-  e.preventDefault()
-  const horizon = parseInt(document.getElementById("horizon").value)
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return alert("Please login first")
+  e.preventDefault();
 
-  const { data } = await supabase.from("notes").select("date,value").eq("user_id", user.id)
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
 
-  const res = await fetch(`${backendUrl}/predict`, {
+  const { data } = await supabase
+    .from("notes")
+    .select("date,value")
+    .eq("user_id", user.id);
+
+  const res = await fetch("https://web-proj-backend.onrender.com/predict", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ records: data, prediction_horizon: horizon })
-  })
-  const forecast = await res.json()
+    body: JSON.stringify({
+      records: data,
+      prediction_horizon: parseInt(horizon.value)
+    })
+  });
 
-  const ctx = document.getElementById("forecastChart")
-  new Chart(ctx, {
-    type: 'line',
+  const forecast = await res.json();
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(document.getElementById("forecastChart"), {
+    type: "line",
     data: {
       labels: forecast.map(f => f.ds),
       datasets: [{
-        label: 'Forecast',
+        label: "Forecast",
         data: forecast.map(f => f.yhat),
-        borderColor: '#3498db',
-        fill: false
+        borderColor: "#38bdf8",
+        fill: true,
+        tension: 0.4
       }]
     }
-  })
-})
+  });
+});
