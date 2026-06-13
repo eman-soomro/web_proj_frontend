@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://ewastpsqndqjtiuaagwy.supabase.co";
-const SUPABASE_KEY = "ewastpsqndqjtiuaagwy";
+const SUPABASE_KEY = "sb_secret_3TdYy07EHugZv05JkjDvdQ_o4FpgMiT";
 
 // IMPORTANT: only ONE client, never redeclare supabase
 const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
