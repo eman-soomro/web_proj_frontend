@@ -2,28 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Trend Forecast & RAG</title>
+  <title>Trend Forecast & Notes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Trend Forecast</h1>
   <form id="forecastForm">
-    <input type="text" id="domain" placeholder="Domain" value="general">
-    <input type="text" id="keywords" placeholder="Keywords (comma separated)" value="AI,machine learning">
     <input type="number" id="horizon" placeholder="Prediction Horizon" value="30">
     <button type="submit">Run Forecast</button>
   </form>
-  <!-- Forecast results will be injected here -->
   <div id="forecastResult" class="card"></div>
 
-  <h1>RAG Query</h1>
-  <form id="ragForm">
-    <input type="text" id="ragKeyword" placeholder="Keyword" value="artificial intelligence">
-    <button type="submit">Run RAG</button>
+  <h1>Login</h1>
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button type="submit">Login</button>
   </form>
-  <!-- RAG results will be injected here -->
-  <div id="ragResult" class="card"></div>
+  <div id="loginResult"></div>
 
-  <script src="script.js"></script>
+  <h1>Notes</h1>
+  <form id="noteForm">
+    <input type="text" id="noteTitle" placeholder="Title">
+    <textarea id="noteContent" placeholder="Content"></textarea>
+    <input type="date" id="noteDate">
+    <input type="number" id="noteValue" placeholder="Value">
+    <button type="submit">Add Note</button>
+  </form>
+  <div id="notesList"></div>
+
+  <!-- RAG section removed from HTML -->
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
