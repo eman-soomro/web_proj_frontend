@@ -22,4 +22,3 @@ async function runRag(keyword) {
 //   document.getElementById("ragResult").innerHTML = JSON.stringify(results, null, 2)
 // })
 
-});
