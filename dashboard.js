@@ -1,34 +1,34 @@
-const supabaseUrl = "https://ewastpsqndqjtiuaagwy.supabase.co";
-const supabaseKey = "sb_publishable_H4cWNsOmEAPu1ymPdhFxSw_YjRgoWDT";
+const SUPABASE_URL = "https://ewastpsqndqjtiuaagwy.supabase.co";
+const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let chart;
 
-// Section toggle
+// UI NAV
 window.showSection = function (id) {
   document.getElementById("notesSection").style.display = "none";
   document.getElementById("predictionSection").style.display = "none";
   document.getElementById(id).style.display = "block";
 };
 
-// Logout
+// LOGOUT
 window.logout = async function () {
-  await supabase.auth.signOut();
+  await client.auth.signOut();
   window.location.href = "auth.html";
 };
 
-// Load notes
+// LOAD NOTES
 async function loadNotes() {
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await client.auth.getUser();
   if (!user) return;
 
-  const { data } = await supabase
+  const { data } = await client
     .from("notes")
     .select("*")
     .eq("user_id", user.id);
 
-  document.getElementById("notesList").innerHTML = data.map(n => `
+  notesList.innerHTML = data.map(n => `
     <div class="card">
       <h3>${n.title}</h3>
       <p>${n.content}</p>
@@ -36,50 +36,43 @@ async function loadNotes() {
     </div>
   `).join("");
 
-  document.getElementById("totalNotes").textContent = data.length;
-  if (data.length)
-    document.getElementById("latestValue").textContent =
-      data[data.length - 1].value;
+  totalNotes.innerText = data.length;
+  if (data.length) latestValue.innerText = data[data.length - 1].value;
 }
 
 loadNotes();
 
-// Add note
-document.getElementById("noteForm").addEventListener("submit", async (e) => {
+// ADD NOTE
+noteForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
+  const { data: { user } } = await client.auth.getUser();
 
-  await supabase.from("notes").insert([{
+  await client.from("notes").insert([{
     user_id: user.id,
     title: noteTitle.value,
     content: noteContent.value,
     date: noteDate.value,
-    value: parseFloat(noteValue.value)
+    value: Number(noteValue.value)
   }]);
 
   loadNotes();
 });
 
-// Forecast
-document.getElementById("forecastForm").addEventListener("submit", async (e) => {
+// FORECAST
+forecastForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
-
-  const { data } = await supabase
+  const { data } = await client
     .from("notes")
-    .select("date,value")
-    .eq("user_id", user.id);
+    .select("date,value");
 
   const res = await fetch("https://web-proj-backend.onrender.com/predict", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       records: data,
-      prediction_horizon: parseInt(horizon.value)
+      prediction_horizon: Number(horizon.value)
     })
   });
 
@@ -87,7 +80,7 @@ document.getElementById("forecastForm").addEventListener("submit", async (e) => 
 
   if (chart) chart.destroy();
 
-  chart = new Chart(document.getElementById("forecastChart"), {
+  chart = new Chart(forecastChart, {
     type: "line",
     data: {
       labels: forecast.map(f => f.ds),
