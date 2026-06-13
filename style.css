@@ -62,7 +62,9 @@ body{
 }
 
 .hero-img{
-  width:220px;
+  width:50%;
+  max-width:220px;
+  min-width:120px;
   display:block;
   margin:0 auto 20px;
   border-radius:16px;
