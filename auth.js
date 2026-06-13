@@ -1,35 +1,38 @@
-const supabaseUrl = "https://ewastpsqndqjtiuaagwy.supabase.co";
-const supabaseKey = "sb_publishable_H4cWNsOmEAPu1ymPdhFxSw_YjRgoWDT";
+const SUPABASE_URL = "https://ewastpsqndqjtiuaagwy.supabase.co";
+const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+// IMPORTANT: only ONE client, never redeclare supabase
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Signup
+// SIGNUP
 document.getElementById("signupForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("signupEmail").value;
-  const password = document.getElementById("signupPassword").value;
+  const email = signupEmail.value;
+  const password = signupPassword.value;
 
-  const { error } = await supabase.auth.signUp({ email, password });
+  const { error } = await client.auth.signUp({
+    email,
+    password
+  });
 
-  document.getElementById("signupResult").innerText =
-    error ? error.message : "Signup successful! Check email.";
+  signupResult.innerText = error ? error.message : "Signup success! Check email.";
 });
 
-// Login
+// LOGIN
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error } = await client.auth.signInWithPassword({
     email,
     password
   });
 
   if (error) {
-    document.getElementById("loginResult").innerText = error.message;
+    loginResult.innerText = error.message;
   } else {
     window.location.href = "dashboard.html";
   }
