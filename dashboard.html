@@ -1,62 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>Trend Forecast Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
 
   <link rel="stylesheet" href="style.css">
 
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  >
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body class="dashboard-body">
 
   <aside class="sidebar">
-
-    <div class="logo">
-      📈 Trend Forecast
-    </div>
+    <h2>📒 Trend</h2>
 
     <button onclick="showSection('notesSection')">
-      <i class="fas fa-note-sticky"></i>
-      Notes
+      <i class="fa fa-note-sticky"></i> Notes
     </button>
 
     <button onclick="showSection('predictionSection')">
-      <i class="fas fa-chart-line"></i>
-      Forecast
+      <i class="fa fa-chart-line"></i> Forecast
     </button>
-
   </aside>
 
   <main class="main">
 
     <div class="topbar">
-
       <div>
         <h1>Dashboard</h1>
-        <p>Analyze trends and generate predictions</p>
+        <p>Analyze your trends</p>
       </div>
 
-      <button id="logoutBtn">
-        <i class="fas fa-right-from-bracket"></i>
-        Logout
-      </button>
-
+      <button onclick="logout()">Logout</button>
     </div>
 
+    <!-- STATS -->
     <div class="stats">
-
       <div class="stat-card">
         <h3>Total Notes</h3>
         <p id="totalNotes">0</p>
@@ -66,94 +53,39 @@
         <h3>Latest Value</h3>
         <p id="latestValue">0</p>
       </div>
-
-      <div class="stat-card">
-        <h3>Forecast Ready</h3>
-        <p>✓</p>
-      </div>
-
     </div>
 
-    <!-- Notes -->
-
+    <!-- NOTES -->
     <section id="notesSection">
 
-      <h2 class="section-title">My Notes</h2>
+      <h2>Notes</h2>
 
       <form id="noteForm">
-
-        <input
-          type="text"
-          id="noteTitle"
-          placeholder="Note Title"
-          required
-        >
-
-        <textarea
-          id="noteContent"
-          placeholder="Write something..."
-          rows="4"
-        ></textarea>
-
-        <input
-          type="date"
-          id="noteDate"
-          required
-        >
-
-        <input
-          type="number"
-          id="noteValue"
-          placeholder="Value"
-          required
-        >
-
-        <button type="submit">
-          Add Note
-        </button>
-
+        <input id="noteTitle" placeholder="Title">
+        <textarea id="noteContent" placeholder="Content"></textarea>
+        <input type="date" id="noteDate">
+        <input type="number" id="noteValue" placeholder="Value">
+        <button>Add Note</button>
       </form>
 
       <div id="notesList"></div>
-
     </section>
 
-    <!-- Forecast -->
-
-    <section
-      id="predictionSection"
-      style="display:none;"
-    >
-
-      <h2 class="section-title">
-        Trend Forecast
-      </h2>
+    <!-- FORECAST -->
+    <section id="predictionSection" style="display:none;">
+      <h2>Forecast</h2>
 
       <form id="forecastForm">
-
-        <input
-          type="number"
-          id="horizon"
-          value="30"
-          placeholder="Prediction Days"
-        >
-
-        <button type="submit">
-          Run Forecast
-        </button>
-
+        <input type="number" id="horizon" value="30">
+        <button>Run Forecast</button>
       </form>
 
-      <div class="chart-card">
-        <canvas id="forecastChart"></canvas>
-      </div>
-
+      <canvas id="forecastChart"></canvas>
     </section>
 
   </main>
 
-  <script type="module" src="dashboard.js"></script>
-
+  <script src="dashboard.js"></script>
 </body>
 </html>
 </html>
