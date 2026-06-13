@@ -12,37 +12,24 @@
 
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body class="dashboard-body">
 
   <aside class="sidebar">
-    <h2>📒 Trend</h2>
+    <h2>📊 Trend</h2>
 
-    <button onclick="showSection('notesSection')">
-      <i class="fa fa-note-sticky"></i> Notes
-    </button>
-
-    <button onclick="showSection('predictionSection')">
-      <i class="fa fa-chart-line"></i> Forecast
-    </button>
+    <button onclick="showSection('notesSection')">Notes</button>
+    <button onclick="showSection('predictionSection')">Forecast</button>
   </aside>
 
   <main class="main">
 
     <div class="topbar">
-      <div>
-        <h1>Dashboard</h1>
-        <p>Analyze your trends</p>
-      </div>
-
+      <h1>Dashboard</h1>
       <button onclick="logout()">Logout</button>
     </div>
 
-    <!-- STATS -->
     <div class="stats">
       <div class="stat-card">
         <h3>Total Notes</h3>
@@ -55,26 +42,21 @@
       </div>
     </div>
 
-    <!-- NOTES -->
     <section id="notesSection">
-
-      <h2>Notes</h2>
 
       <form id="noteForm">
         <input id="noteTitle" placeholder="Title">
         <textarea id="noteContent" placeholder="Content"></textarea>
         <input type="date" id="noteDate">
         <input type="number" id="noteValue" placeholder="Value">
-        <button>Add Note</button>
+        <button>Add</button>
       </form>
 
       <div id="notesList"></div>
+
     </section>
 
-    <!-- FORECAST -->
     <section id="predictionSection" style="display:none;">
-      <h2>Forecast</h2>
-
       <form id="forecastForm">
         <input type="number" id="horizon" value="30">
         <button>Run Forecast</button>
@@ -86,6 +68,6 @@
   </main>
 
   <script src="dashboard.js"></script>
+
 </body>
-</html>
 </html>
