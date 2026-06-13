@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://ewastpsqndqjtiuaagwy.supabase.co";
-const SUPABASE_KEY = "sb_publishable_H4cWNsOmEAPu1ymPdhFxSw_YjRgoWDT";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3YXN0cHNxbmRxanRpdWFhZ3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNTM4ODIsImV4cCI6MjA5NjkyOTg4Mn0.BVfU3vmJeA3xpg_jMDdunqlVdDXkxIFPWu5BPdrjhTQ";
 
 // IMPORTANT: only ONE client, never redeclare supabase
 const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
