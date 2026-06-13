@@ -34,4 +34,3 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     window.location.href = "dashboard.html";
   }
 });
-</html>
