@@ -1,4 +1,3 @@
-
 // ---------------- RAG (kept for later use) ----------------
 async function runRag(keyword) {
   try {
@@ -15,10 +14,12 @@ async function runRag(keyword) {
   }
 }
 
+// ❌ Commented out: RAG form handler (since HTML form removed)
 // document.getElementById("ragForm").addEventListener("submit", async (e) => {
 //   e.preventDefault()
 //   const keyword = document.getElementById("ragKeyword").value
 //   const results = await runRag(keyword)
 //   document.getElementById("ragResult").innerHTML = JSON.stringify(results, null, 2)
 // })
+
 
