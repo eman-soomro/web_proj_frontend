@@ -3,34 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Trend Forecast Dashboard</title>
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- Supabase CDN -->
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="dashboard-body">
 
+  <!-- Sidebar -->
   <aside class="sidebar">
-    <h2>📊 Trend</h2>
+    <h2>📈 Trend Forecast</h2>
 
-    <button onclick="showSection('notesSection')">Notes</button>
-    <button onclick="showSection('predictionSection')">Forecast</button>
+    <button onclick="showSection('notesSection')">
+      📝 Notes
+    </button>
+
+    <button onclick="showSection('predictionSection')">
+      📊 Forecast
+    </button>
   </aside>
 
+  <!-- Main Content -->
   <main class="main">
 
+    <!-- Topbar -->
     <div class="topbar">
-      <h1>Dashboard</h1>
-      <button onclick="logout()">Logout</button>
+      <div>
+        <h1>Dashboard</h1>
+        <p>Track ideas and forecast Google Trends</p>
+      </div>
+
+      <button id="logoutBtn" onclick="logout()">
+        Logout
+      </button>
     </div>
 
+    <!-- Stats -->
     <div class="stats">
+
       <div class="stat-card">
         <h3>Total Notes</h3>
         <p id="totalNotes">0</p>
@@ -40,29 +53,93 @@
         <h3>Latest Value</h3>
         <p id="latestValue">0</p>
       </div>
+
     </div>
 
+    <!-- NOTES SECTION -->
     <section id="notesSection">
 
+      <h2 class="section-title">
+        My Notes
+      </h2>
+
       <form id="noteForm">
-        <input id="noteTitle" placeholder="Title">
-        <textarea id="noteContent" placeholder="Content"></textarea>
-        <input type="date" id="noteDate">
-        <input type="number" id="noteValue" placeholder="Value">
-        <button>Add</button>
+
+        <input
+          type="text"
+          id="noteTitle"
+          placeholder="Note Title"
+          required
+        >
+
+        <textarea
+          id="noteContent"
+          placeholder="Write your notes..."
+          required
+        ></textarea>
+
+        <input
+          type="date"
+          id="noteDate"
+          required
+        >
+
+        <input
+          type="number"
+          id="noteValue"
+          placeholder="Value"
+          required
+        >
+
+        <button type="submit">
+          Add Note
+        </button>
+
       </form>
 
       <div id="notesList"></div>
 
     </section>
 
+    <!-- FORECAST SECTION -->
     <section id="predictionSection" style="display:none;">
-      <form id="forecastForm">
-        <input type="number" id="horizon" value="30">
-        <button>Run Forecast</button>
+
+      <h2 class="section-title">
+        Google Trends Forecast
+      </h2>
+
+      <form id="forecastForm" class="forecast-form">
+
+        <input
+          type="text"
+          id="forecastKeyword"
+          placeholder="Keyword (AI, Tesla, Bitcoin...)"
+          required
+        >
+
+        <input
+          type="number"
+          id="horizon"
+          value="30"
+          min="1"
+          max="365"
+        >
+
+        <button type="submit">
+          Analyze Trend
+        </button>
+
       </form>
 
-      <canvas id="forecastChart"></canvas>
+      <div
+        id="forecastLoading"
+        style="display:none;"
+      >
+        Analyzing Google Trends...
+      </div>
+
+      <div id="forecastResult"></div>
+
     </section>
 
   </main>
