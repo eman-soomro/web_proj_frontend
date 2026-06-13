@@ -1,120 +1,106 @@
-const backendUrl = "https://web-proj-backend.onrender.com";
+import { createClient } from '@supabase/supabase-js'
 
-function renderForecast(data) {
-  if (data.error) {
-    return `<div class="error">⚠️ ${data.error}</div>`;
+const backendUrl = "https://web-proj-backend.onrender.com"
+const supabaseUrl = "https://ewastpsqndqjtiuaagwy.supabase.co"
+const supabaseKey = "sb_publishable_H4cWNsOmEAPu1ymPdhFxSw_YjRgoWDT"
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault()
+  const email = document.getElementById("email").value
+  const password = document.getElementById("password").value
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if (error) {
+    document.getElementById("loginResult").innerText = "Error: " + error.message
+  } else {
+    document.getElementById("loginResult").innerText = "Logged in!"
+    loadNotes()
   }
+})
 
-  let html = `
-    <div class="card">
-      <h2>📊 Forecast Results</h2>
-      <p><strong>Domain:</strong> ${data.domain}</p>
-      <p><strong>Prediction Horizon:</strong> ${data.prediction_horizon} days</p>
-      <p><strong>Model Trained:</strong> ${data.model_trained ? "✅ Yes" : "❌ No"}</p>
-      <h3>Keywords:</h3>
-  `;
+document.getElementById("noteForm").addEventListener("submit", async (e) => {
+  e.preventDefault()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return alert("Please login first")
 
-  for (const [keyword, details] of Object.entries(data.keywords || {})) {
-    html += `
-      <div class="keyword-block">
-        <h4>${keyword}</h4>
-        <p><strong>Trend:</strong> ${details.trend}</p>
-        <p><strong>Current Interest:</strong> ${details.current_interest}</p>
-        <p><strong>Change %:</strong> ${details.change_percent}</p>
-        <p><strong>Forecast Interest:</strong> ${details.forecast_interest}</p>
-        ${details.graph ? `<img src="${backendUrl}${details.graph}" alt="${keyword} forecast graph" class="forecast-graph">` : ""}
-        <table>
-          <thead>
-            <tr><th>Date</th><th>Predicted Interest</th></tr>
-          </thead>
-          <tbody>
-            ${details.forecast.map(f => `
-              <tr>
-                <td>${f.date}</td>
-                <td>${f.predicted_interest}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
+  const title = document.getElementById("noteTitle").value
+  const content = document.getElementById("noteContent").value
+  const date = document.getElementById("noteDate").value
+  const value = parseFloat(document.getElementById("noteValue").value)
+
+  const { error } = await supabase
+    .from("notes")
+    .insert([{ user_id: user.id, title, content, date, value }])
+
+  if (error) {
+    alert("Error: " + error.message)
+  } else {
+    alert("Note added!")
+    loadNotes()
+  }
+})
+
+async function loadNotes() {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return
+
+  const { data, error } = await supabase
+    .from("notes")
+    .select("*")
+    .eq("user_id", user.id)
+
+  if (!error) {
+    document.getElementById("notesList").innerHTML = data.map(note => `
+      <div class="card">
+        <h3>${note.title}</h3>
+        <p>${note.content}</p>
+        <p>${note.date} → ${note.value}</p>
       </div>
-    `;
+    `).join("")
   }
-
-  html += `</div>`;
-  return html;
 }
 
-// Helper: format RAG results
-function renderRag(results) {
-  if (results.error) {
-    return `<div class="error">⚠️ ${results.error}</div>`;
-  }
-
-  return `
-    <div class="card">
-      <h2>📚 RAG Results</h2>
-      <ul>
-        ${results.map(paper => `
-          <li>
-            <strong>${paper.properties?.title || "Untitled"}</strong><br>
-            <em>${paper.properties?.authors || "Unknown authors"} (${paper.properties?.year || "N/A"})</em><br>
-            Citations: ${paper.properties?.citations || 0}<br>
-            <p>${paper.properties?.abstract || "No abstract available"}</p>
-          </li>
-        `).join("")}
-      </ul>
-    </div>
-  `;
-}
-
-// Forecast form handler
 document.getElementById("forecastForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const domain = document.getElementById("domain").value;
-  const keywords = document.getElementById("keywords").value.split(",");
-  const horizon = parseInt(document.getElementById("horizon").value);
+  e.preventDefault()
+  const horizon = parseInt(document.getElementById("horizon").value)
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return alert("Please login first")
+
+  const { data } = await supabase
+    .from("notes")
+    .select("date,value")
+    .eq("user_id", user.id)
 
   try {
-    const res = await fetch(`${backendUrl}/forecast`, {
+    const res = await fetch(`${backendUrl}/predict`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ domain, keywords, prediction_horizon: horizon })
-    });
+      body: JSON.stringify({ records: data, prediction_horizon: horizon })
+    })
 
-    if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
-    }
-
-    const data = await res.json();
-    console.log("Forecast response:", res.status, data);
-    document.getElementById("forecastResult").innerHTML = renderForecast(data);
+    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`)
+    const forecast = await res.json()
+    document.getElementById("forecastResult").innerHTML = JSON.stringify(forecast, null, 2)
   } catch (err) {
-    console.error("Forecast error:", err);
-    document.getElementById("forecastResult").innerHTML = `<div class="error">Error: ${err.message}</div>`;
+    document.getElementById("forecastResult").innerHTML = `<div class="error">Error: ${err.message}</div>`
   }
-});
+}
 
-// RAG form handler
-document.getElementById("ragForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const keyword = document.getElementById("ragKeyword").value;
-
+async function runRag(keyword) {
   try {
     const res = await fetch(`${backendUrl}/rag`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ keyword })
-    });
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
-    }
-
-    const data = await res.json();
-    console.log("RAG response:", res.status, data);
-    document.getElementById("ragResult").innerHTML = renderRag(data);
+    })
+    const data = await res.json()
+    console.log("RAG response:", data)
+    return data
   } catch (err) {
-    console.error("RAG error:", err);
-    document.getElementById("ragResult").innerHTML = `<div class="error">Error: ${err.message}</div>`;
+    console.error("RAG error:", err)
   }
+}
+
 });
