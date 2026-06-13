@@ -62,9 +62,10 @@ body{
 }
 
 .hero-img{
-  width:100%;
+  width:220px;
+  display:block;
+  margin:0 auto 20px;
   border-radius:16px;
-  margin-bottom:20px;
 }
 
 .auth-card h2{
