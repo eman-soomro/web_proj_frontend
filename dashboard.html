@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Trend Forecast</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+  <div class="sidebar">
+    <h2>📒 Notes</h2>
+    <button onclick="showSection('notesSection')">Notes</button>
+    <button onclick="showSection('predictionSection')">Prediction</button>
+  </div>
+
+  <div class="main">
+    <section id="notesSection">
+      <h1>Notes</h1>
+      <form id="noteForm">
+        <input type="text" id="noteTitle" placeholder="Title">
+        <textarea id="noteContent" placeholder="Content"></textarea>
+        <input type="date" id="noteDate">
+        <input type="number" id="noteValue" placeholder="Value">
+        <button type="submit">Add Note</button>
+      </form>
+      <div id="notesList"></div>
+    </section>
+
+    <section id="predictionSection" style="display:none;">
+      <h1>Prediction</h1>
+      <form id="forecastForm">
+        <input type="number" id="horizon" placeholder="Prediction Horizon" value="30">
+        <button type="submit">Run Forecast</button>
+      </form>
+      <canvas id="forecastChart"></canvas>
+    </section>
+  </div>
+
+  <script type="module" src="dashboard.js"></script>
+</body>
+</html>
