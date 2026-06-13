@@ -145,7 +145,7 @@ document
 
     try {
       const response = await fetch(
-        "https://web-proj-backend.onrender.com/predict",
+        "https://web-proj-backend.onrender.com/forecast",
         {
           method: "POST",
           headers: {
